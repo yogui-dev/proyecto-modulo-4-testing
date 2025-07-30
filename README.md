@@ -1,8 +1,16 @@
-# Proyecto Módulo 4 - Testing Automatizado
+# Proyecto Módulo 4 - Testing Automatizado v1.1.0
 
 ## 📋 Descripción
 
-Proyecto de testing automatizado desarrollado con **Selenium WebDriver** y **TestNG** para realizar pruebas de funcionalidad en aplicaciones web. El proyecto incluye tests automatizados para login y registro de usuarios, utilizando el patrón **Page Object Model** y datos de prueba desde archivos CSV.
+Proyecto de testing automatizado desarrollado con **Selenium WebDriver** y **TestNG** para realizar pruebas de funcionalidad en aplicaciones web. El proyecto incluye tests automatizados para login y registro de usuarios, utilizando el patrón **Page Object Model** y datos de prueba desde archivos CSV con validaciones avanzadas de URL.
+
+## 🆕 Novedades v1.1.0
+
+- **Validaciones mejoradas**: Comparación precisa de URLs esperadas vs actuales después del login
+- **Testing de casos negativos**: Incluye usuarios inválidos para probar fallos de autenticación
+- **Logging avanzado**: Registro detallado de URLs actuales durante la ejecución
+- **Estructura CSV expandida**: Soporte para columna `expectedUrl` en datos de prueba
+- **Asserts más robustos**: Migración de `assertTrue` a `assertEquals` para mayor precisión
 
 ## 🛠️ Tecnologías Utilizadas
 
@@ -80,11 +88,12 @@ mvn test -DsuiteXmlFile=testng.xml
 
 ### LoginTest
 - **Propósito**: Validar la funcionalidad de inicio de sesión
-- **Datos**: Lee credenciales desde `users.csv`
+- **Datos**: Lee credenciales y URLs esperadas desde `users.csv`
 - **Validaciones**: 
-  - Verifica que el login sea exitoso
-  - Confirma la presencia del texto "Escritorio" después del login
-- **Logging**: Registra el inicio y fin de cada test con el usuario utilizado
+  - Compara la URL actual vs URL esperada después del login
+  - Utiliza `Assert.assertEquals()` para validaciones precisas
+  - Incluye casos de prueba positivos y negativos
+- **Logging**: Registra el inicio, fin y URL actual de cada test
 
 ### RegisterTest
 - **Propósito**: Validar la funcionalidad de registro de usuarios
@@ -95,13 +104,17 @@ mvn test -DsuiteXmlFile=testng.xml
 Los datos de prueba se almacenan en `src/test/resources/data/users.csv`:
 
 ```csv
-username,password
-user_testing,F$xV@jsRnNGCoYRA7QxypydQ
+username,password,expectedUrl
+user_testing,F$xV@jsRnNGCoYRA7QxypydQ,https://tienda.demo.yoguilab.space/mi-cuenta/
+usuario_invalido,clave123,https://tienda.demo.yoguilab.space/wp-login.php
 ```
 
 ### Formato del CSV
-- **Primera fila**: Headers (username, password)
+- **Primera fila**: Headers (username, password, expectedUrl)
 - **Filas siguientes**: Datos de usuarios para testing
+- **expectedUrl**: URL esperada después del intento de login
+  - Para usuarios válidos: URL del dashboard/mi-cuenta
+  - Para usuarios inválidos: URL de la página de login (sin redirección)
 
 ## 🏗️ Arquitectura
 
