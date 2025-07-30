@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="M4Suite">
+    <test name="LoginYRegistro">
+        <parameter name="url" value="https://tienda.demo.yoguilab.space/wp-login.php"/>
+        <classes>
+            <class name="tests.LoginTest"/>
+            <class name="tests.RegisterTest"/>
+        </classes>
+    </test>
+</suite>
