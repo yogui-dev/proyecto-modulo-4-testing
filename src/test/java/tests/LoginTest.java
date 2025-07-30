@@ -29,14 +29,16 @@ public class LoginTest {
     }
 
     @Test(dataProvider = "csvLoginData")
-    public void testLogin(String user, String pass) {
+    public void testLogin(String user, String pass, String expectedUrl) {
         log.info("Iniciando test de login con usuario: {}", user);
         LoginPage login = new LoginPage(driver);
         login.login(user, pass);
 
-        Assert.assertTrue(driver.getPageSource().contains("Escritorio"), "Login falló para: " + user);
+        String currentUrl = driver.getCurrentUrl();
+        log.info("URL actual después del login: {}", currentUrl);
 
-        log.info("Test de login finalizado para usuario: {}", user);
+        Assert.assertEquals(currentUrl, expectedUrl,
+                "La URL después del login no coincide con la esperada.");
     }
 
     @DataProvider(name = "csvLoginData")
@@ -55,12 +57,13 @@ public class LoginTest {
         CSVParser parser = new CSVParser(reader, format);
 
         var records = parser.getRecords();
-        Object[][] data = new Object[records.size()][2];
+        Object[][] data = new Object[records.size()][3];
 
         int i = 0;
         for (CSVRecord record : records) {
             data[i][0] = record.get("username");
             data[i][1] = record.get("password");
+            data[i][2] = record.get("expectedUrl");
             i++;
         }
 
@@ -69,7 +72,6 @@ public class LoginTest {
         log.info("Datos leidos del archivo CSV: {}", data.length);
         return data;
     }
-
 
     @AfterMethod
     public void tearDown() {

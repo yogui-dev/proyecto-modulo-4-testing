@@ -1,2 +1,3 @@
-username,password
-user_testing,F$xV@jsRnNGCoYRA7QxypydQ
+username,password,expectedUrl
+user_testing,F$xV@jsRnNGCoYRA7QxypydQ,https://tienda.demo.yoguilab.space/mi-cuenta/
+usuario_invalido,clave123,https://tienda.demo.yoguilab.space/wp-login.php
