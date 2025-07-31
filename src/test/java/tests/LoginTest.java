@@ -3,38 +3,32 @@ package tests;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import pages.LoginPage;
 
 import java.io.*;
 
-public class LoginTest {
+
+@Listeners(listeners.ScreenshotListener.class)
+public class LoginTest extends BaseTest {
 
     private static final Logger log = LoggerFactory.getLogger(LoginTest.class);
-
-    WebDriver driver;
-
-    @BeforeMethod
-    public void setup() {
-        driver = new FirefoxDriver();
-        driver.get("https://tienda.demo.yoguilab.space/wp-login.php");
-    }
 
     @Test(dataProvider = "csvLoginData")
     public void testLogin(String user, String pass, String expectedUrl) {
         log.info("Iniciando test de login con usuario: {}", user);
-        LoginPage login = new LoginPage(driver);
+
+        getDriver().get("https://tienda.demo.yoguilab.space/wp-login.php");
+
+        LoginPage login = new LoginPage(getDriver());
         login.login(user, pass);
 
-        String currentUrl = driver.getCurrentUrl();
+        String currentUrl = getDriver().getCurrentUrl();
         log.info("URL actual después del login: {}", currentUrl);
 
         Assert.assertEquals(currentUrl, expectedUrl,
@@ -69,12 +63,7 @@ public class LoginTest {
 
         reader.close();
         parser.close();
-        log.info("Datos leidos del archivo CSV: {}", data.length);
+        log.info("Datos leídos del archivo CSV: {}", data.length);
         return data;
-    }
-
-    @AfterMethod
-    public void tearDown() {
-        driver.quit();
     }
 }

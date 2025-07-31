@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suite name="M4Suite">
+    <listeners>
+        <listener class-name="listeners.ScreenshotListener"/>
+    </listeners>
     <test name="LoginYRegistro">
         <parameter name="url" value="https://tienda.demo.yoguilab.space/wp-login.php"/>
         <classes>
