@@ -8,35 +8,47 @@ import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Listeners;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import pages.LoginPage;
 
 import java.io.*;
-
+import java.lang.reflect.Method;
 
 @Listeners(listeners.ScreenshotListener.class)
 public class LoginTest extends BaseTest {
 
-    private static final Logger log = LoggerFactory.getLogger(LoginTest.class);
+    @Test(dataProvider = "csvData")
+    @Parameters("browser")
+    public void testLogin(String browser, String username, String password, String expectedUrl) {
 
-    @Test(dataProvider = "csvLoginData")
-    public void testLogin(String user, String pass, String expectedUrl) {
-        log.info("Iniciando test de login con usuario: {}", user);
+        setUp(browser);
+        getDriverInstance().get("https://tienda.demo.yoguilab.space/wp-login.php");
 
-        getDriver().get("https://tienda.demo.yoguilab.space/wp-login.php");
+        LoginPage login = new LoginPage(getDriverInstance());
+        login.login(username, password);
 
-        LoginPage login = new LoginPage(getDriver());
-        login.login(user, pass);
-
-        String currentUrl = getDriver().getCurrentUrl();
-        log.info("URL actual después del login: {}", currentUrl);
+        String currentUrl = getDriverInstance().getCurrentUrl();
 
         Assert.assertEquals(currentUrl, expectedUrl,
                 "La URL después del login no coincide con la esperada.");
     }
 
-    @DataProvider(name = "csvLoginData")
-    public Object[][] getDataFromCsv() throws IOException {
+    @DataProvider(name = "csvData")
+    public Object[][] getCsvData(Method method) throws IOException {
+        // Leer el parámetro "browser" desde el test actual
+        String browser = method
+                .getDeclaringClass()
+                .getAnnotation(org.testng.annotations.Test.class)
+                .testName();
+
+        if (browser == null || browser.isEmpty()) {
+            browser = "chrome"; // fallback
+        } else {
+            // Extraer navegador desde el nombre del test si lo escribiste así en el XML
+            browser = browser.replace("LoginYRegistro_", "").toLowerCase();
+        }
+
         InputStream input = getClass().getClassLoader().getResourceAsStream("data/users.csv");
         if (input == null) {
             throw new FileNotFoundException("Archivo CSV no encontrado en resources/data/");
@@ -51,19 +63,21 @@ public class LoginTest extends BaseTest {
         CSVParser parser = new CSVParser(reader, format);
 
         var records = parser.getRecords();
-        Object[][] data = new Object[records.size()][3];
+        Object[][] data = new Object[records.size()][4];
 
-        int i = 0;
+        int index = 0;
         for (CSVRecord record : records) {
-            data[i][0] = record.get("username");
-            data[i][1] = record.get("password");
-            data[i][2] = record.get("expectedUrl");
-            i++;
+            data[index][0] = browser;
+            data[index][1] = record.get("username");
+            data[index][2] = record.get("password");
+            data[index][3] = record.get("expectedUrl");
+            index++;
         }
 
         reader.close();
         parser.close();
-        log.info("Datos leídos del archivo CSV: {}", data.length);
         return data;
     }
+
+
 }

@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import pages.LoginPage;
 import pages.RegisterPage;
 
 import java.io.*;
@@ -17,25 +17,33 @@ public class RegisterTest extends BaseTest {
 
     private static final Logger log = LoggerFactory.getLogger(RegisterTest.class);
 
-    @Test(dataProvider = "csvRegisterData")
-    public void testLogin(String email, String expectedMessage) {
-        log.info("Iniciando test de login con usuario: {}", email);
+    @Test(dataProvider = "csvData")
+    @Parameters("browser")
+    public void testRegister(String browser, String email, String expectedMessage) {
+        log.info("Iniciando test en [{}] con email: {}", browser, email);
 
-        getDriver().get("https://tienda.demo.yoguilab.space/mi-cuenta/");
+        setUp(browser); // Inicializa el navegador
+        getDriverInstance().get("https://tienda.demo.yoguilab.space/mi-cuenta/");
 
-        RegisterPage register = new RegisterPage(getDriver());
+        RegisterPage register = new RegisterPage(getDriverInstance());
         register.register(email);
 
-        String currentUrl = getDriver().getCurrentUrl();
-        log.info("URL actual después del login: {}", currentUrl);
+        String currentUrl = getDriverInstance().getCurrentUrl();
+        log.info("URL actual después del registro: {}", currentUrl);
 
-        Assert.assertTrue(getDriver().getPageSource().contains(expectedMessage),
+        boolean contieneMensaje = getDriverInstance()
+                .getPageSource()
+                .contains(expectedMessage);
+
+        Assert.assertTrue(contieneMensaje,
                 "Tu cuenta de Tienda Demo está utilizando una contraseña temporal. Te hemos enviado por correo electrónico un enlace para cambiar tu contraseña.");
+
+        // tearDown() lo hace TestNG automáticamente con @AfterMethod
     }
 
 
-    @DataProvider(name = "csvRegisterData")
-    public Object[][] getDataFromCsv() throws IOException {
+    @DataProvider(name = "csvData")
+    public Object[][] getCsvData() throws IOException {
         InputStream input = getClass().getClassLoader().getResourceAsStream("data/register.csv");
         if (input == null) {
             throw new FileNotFoundException("Archivo CSV no encontrado en resources/data/");
@@ -52,16 +60,16 @@ public class RegisterTest extends BaseTest {
         var records = parser.getRecords();
         Object[][] data = new Object[records.size()][2];
 
-        int i = 0;
+        int index = 0;
         for (CSVRecord record : records) {
-            data[i][0] = record.get("email");
-            data[i][1] = record.get("expectedMessage");
-            i++;
+            data[index][0] = record.get("email");
+            data[index][1] = record.get("expectedMessage");
+            index++;
         }
 
         reader.close();
         parser.close();
-        log.info("Datos leídos del archivo CSV: {}", data.length);
         return data;
     }
+
 }

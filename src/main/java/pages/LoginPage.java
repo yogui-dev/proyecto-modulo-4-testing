@@ -2,6 +2,11 @@ package pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class LoginPage {
 
@@ -11,24 +16,20 @@ public class LoginPage {
     By passwordField = By.id("user_pass");
     By loginButton = By.id("wp-submit");
 
-    /**
-     * Constructor to initialize the LoginPage object.
-     *
-     * @param driver the WebDriver instance to use.
-     */
     public LoginPage(WebDriver driver) {
         this.driver = driver;
     }
 
-    /**
-     * Logs in to the WordPress site with the given username and password.
-     *
-     * @param username the username to log in with.
-     * @param password the password to log in with.
-     */
     public void login(String username, String password) {
-        driver.findElement(usernameField).sendKeys(username);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(usernameField))
+                .sendKeys(username);
+
         driver.findElement(passwordField).sendKeys(password);
-        driver.findElement(loginButton).click();
+
+        // Espera nuevamente y busca el botón en ese momento
+        wait.until(ExpectedConditions.elementToBeClickable(loginButton)).click();
     }
+
 }

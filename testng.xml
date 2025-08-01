@@ -1,10 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<suite name="M4Suite">
-    <listeners>
-        <listener class-name="listeners.ScreenshotListener"/>
-    </listeners>
-    <test name="LoginYRegistro">
-        <parameter name="url" value="https://tienda.demo.yoguilab.space/wp-login.php"/>
+<suite name="M4Suite" parallel="tests" thread-count="3">
+    <test name="LoginYRegistro_Chrome">
+        <parameter name="browser" value="chrome"/>
+        <classes>
+            <class name="tests.LoginTest"/>
+            <class name="tests.RegisterTest"/>
+        </classes>
+    </test>
+    <test name="LoginYRegistro_Firefox">
+        <parameter name="browser" value="firefox"/>
         <classes>
             <class name="tests.LoginTest"/>
             <class name="tests.RegisterTest"/>

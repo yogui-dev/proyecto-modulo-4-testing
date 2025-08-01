@@ -11,7 +11,16 @@ public class ScreenshotListener implements ITestListener {
     @Override
     public void onTestFailure(ITestResult result) {
         Object currentClass = result.getInstance();
-        WebDriver driver = ((BaseTest) currentClass).getDriver();
-        ScreenshotUtil.takeScreenshot(driver, result.getName());
+
+        if (currentClass instanceof BaseTest baseTest) {
+            WebDriver driver = baseTest.getDriverInstance();
+            if (driver != null) {
+                ScreenshotUtil.takeScreenshot(driver, result.getName());
+            } else {
+                System.err.println("⚠️ No se pudo capturar screenshot porque el driver es null");
+            }
+        } else {
+            System.err.println("⚠️ La clase del test no es instancia de BaseTest");
+        }
     }
 }
