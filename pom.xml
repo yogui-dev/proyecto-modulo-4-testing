@@ -22,6 +22,13 @@
             <version>4.21.0</version>
         </dependency>
 
+        <!-- WebDriverManager -->
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.8.0</version>
+        </dependency>
+
         <!-- TestNG -->
         <dependency>
             <groupId>org.testng</groupId>

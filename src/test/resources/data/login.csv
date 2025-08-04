@@ -1,0 +1,4 @@
+username,password,expectedMessage,selector,type,testType
+user_testing,F$xV@jsRnNGCoYRA7QxypydQ,https://tienda.demo.yoguilab.space/mi-cuenta/,,,success
+usuario_invalido,cualquierclave,"Error: El nombre de usuario usuario_invalido no está registrado en este sitio. Si no estás seguro de tu nombre de usuario, prueba con tu dirección de correo electrónico en su lugar.",.wc-block-components-notice-banner__content,css,"error"
+user_testing,password_invalida,"Error: la contraseña que has introducido para el nombre de usuario user_testing no es correcta. ¿Has olvidado tu contraseña?",.wc-block-components-notice-banner__content,css,"error"

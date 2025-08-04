@@ -1,16 +1,14 @@
 <suite name="M4Suite" parallel="tests" thread-count="3">
     <test name="LoginYRegistro_Chrome">
-        <parameter name="browser" value="chrome"/>
         <classes>
-            <class name="tests.LoginTest"/>
-            <class name="tests.RegisterTest"/>
+            <class name="tests.chrome.LoginTest"/>
+            <class name="tests.chrome.RegisterTest"/>
         </classes>
     </test>
     <test name="LoginYRegistro_Firefox">
-        <parameter name="browser" value="firefox"/>
         <classes>
-            <class name="tests.LoginTest"/>
-            <class name="tests.RegisterTest"/>
+            <class name="tests.firefox.LoginTest"/>
+            <class name="tests.firefox.RegisterTest"/>
         </classes>
     </test>
 </suite>
